@@ -1,24 +1,25 @@
-version: '3'
+version: '3.8'
+
 services:
+  strapi:
+    build:
+      context: ./backend
+    ports:
+      - '1337:1337'
+    volumes:
+      - ./backend:/app
+      - ./backend/.tmp:/app/.tmp
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+
   frontend:
     build:
       context: .
-      dockerfile: Dockerfile
     ports:
-      - "3000:3000"
-    env_file:
-      - .env.development
-    depends_on:
-      - backend
-
-  backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-    ports:
-      - "1337:1337"
+      - '3000:3000'
     volumes:
-      - ./backend:/app
-    env_file:
-      - .env.development
-
+      - .:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development

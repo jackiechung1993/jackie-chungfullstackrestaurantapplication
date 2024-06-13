@@ -52,8 +52,8 @@ function RestaurantList({ search }) {
         <CardImg
           top={true}
           style={{ height: 200 }}
-          src={`http://localhost:1337${res.image.url}`}
-        />
+          src={res.image && res.image.url ? `http://localhost:1337${res.image.url}` : '/default-image.png'}
+          />
         <CardBody>
           <CardText>{res.description}</CardText>
         </CardBody>

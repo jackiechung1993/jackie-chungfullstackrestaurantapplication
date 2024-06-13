@@ -1,87 +1,86 @@
 import React, { useContext } from "react";
 import { useRouter } from "next/router";
 import { Button, Card, CardBody, CardTitle, Badge } from "reactstrap";
-import AppContext from "./context"
-import Link from "next/link"
+import AppContext from "./context";
+import Link from "next/link";
 
 function Cart() {
   let isAuthenticated = true;
-  let {cart,addItem,removeItem} = useContext(AppContext);
+  let { cart, addItem, removeItem } = useContext(AppContext);
 
-  console.log(`in CART: ${JSON.stringify(cart)}`)
-  
+  console.log(`in CART: ${JSON.stringify(cart)}`);
+
   const router = useRouter();
-  console.log(`Router Path: ${JSON.stringify(router)}`)
-  
-  const renderItems = ()=>{
+  console.log(`Router Path: ${JSON.stringify(router)}`);
+
+  const renderItems = () => {
     if (!cart) {
       console.log('Cart is not defined');
       return;
     }
 
-    let {items} = cart;
-    console.log(`items: ${JSON.stringify(items)}`)
+    let { items } = cart;
+    console.log(`items: ${JSON.stringify(items)}`);
 
-    if(items && items.length){
+    if (items && items.length) {
       var itemList = cart.items.map((item) => {
-          if (item.quantity > 0) {
-            return (
-              <div
-                className="items-one"
-                style={{ marginBottom: 15 }}
-                key={item.id}
-              >
-                <div>
-                  <span id="item-price">  ${item.price}</span>
-                  <span id="item-name">  {item.name}</span>
-                </div>
-                <div>
-                  <Button
-                    style={{
-                      height: 25,
-                      padding: 0,
-                      width: 15,
-                      marginRight: 5,
-                      marginLeft: 10,
-                    }}
-                    onClick={() => addItem(item)}
-                    color="link"
-                  >
-                    +
-                  </Button>
-                  <Button
-                    style={{
-                      height: 25,
-                      padding: 0,
-                      width: 15,
-                      marginRight: 10,
-                    }}
-                    onClick={() => removeItem(item)}
-                    color="link"
-                  >
-                    -
-                  </Button>
-                  <span style={{ marginLeft: 5 }} id="item-quantity">
-                    {item.quantity}x
-                  </span>
-                </div>
+        if (item.quantity > 0) {
+          return (
+            <div
+              className="items-one"
+              style={{ marginBottom: 15 }}
+              key={item.id}
+            >
+              <div>
+                <span id="item-price"> ${item.price}</span>
+                <span id="item-name"> {item.name}</span>
               </div>
-            );
-          }
-        })
-        return itemList;
-      }
-    else {
-        return (<div></div>)
+              <div>
+                <Button
+                  style={{
+                    height: 25,
+                    padding: 0,
+                    width: 15,
+                    marginRight: 5,
+                    marginLeft: 10,
+                  }}
+                  onClick={() => addItem(item)}
+                  color="link"
+                >
+                  +
+                </Button>
+                <Button
+                  style={{
+                    height: 25,
+                    padding: 0,
+                    width: 15,
+                    marginRight: 10,
+                  }}
+                  onClick={() => removeItem(item)}
+                  color="link"
+                >
+                  -
+                </Button>
+                <span style={{ marginLeft: 5 }} id="item-quantity">
+                  {item.quantity}x
+                </span>
+              </div>
+            </div>
+          );
+        }
+      });
+      return itemList;
+    } else {
+      return (<div></div>);
     }
-  }
+  };
 
-  const checkoutItems = ()=>{
+  const checkoutItems = () => {
     return (
       <div>
         <Badge style={{ width: 200, padding: 10 }} color="light">
           <h5 style={{ fontWeight: 100, color: "gray" }}>Total:</h5>
-          <h3>${cart ? cart.total : 0}</h3>
+          <h3>${cart ? cart.total.toFixed(2) : "0.00"}</h3>
         </Badge>
         <Link href="/checkout/">
           <Button style={{ width: "60%" }} color="primary">
@@ -89,8 +88,8 @@ function Cart() {
           </Button>
         </Link>
       </div>
-    )
-  }  
+    );
+  };
 
   return (
     <div>
@@ -108,7 +107,7 @@ function Cart() {
           <div>
             {checkoutItems()}
           </div>
-          
+
           {console.log(`Router Path: ${router.asPath}`)}
         </CardBody>
       </Card>
@@ -132,3 +131,4 @@ function Cart() {
 }
 
 export default Cart;
+

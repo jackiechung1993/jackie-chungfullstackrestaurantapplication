@@ -26,7 +26,6 @@ function CheckoutForm() {
 
   async function submitOrder() {
     const cardElement = elements.getElement(CardElement);
-  
     const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:1337";
   
     const tokenResponse = await stripe.createToken(cardElement);
@@ -38,38 +37,51 @@ function CheckoutForm() {
     const token = tokenResponse.token;
     const userToken = Cookies.get("token");
   
+    if (appContext.cart.total <= 0 || appContext.cart.items.length === 0) {
+      setError('Your cart is empty or has an invalid total.');
+      return;
+    }
+
     const orderData = {
-      amount: Math.round(appContext.cart.total * 100) / 100, // Ensure amount is correctly rounded to two decimal places
+      amount: appContext.cart.total, // Send amount in dollars
       dishes: appContext.cart.items,
       address: data.address,
       city: data.city,
       state: data.state,
       token: token.id,
     };
+    
+    console.log("API URL:", API_URL);
+    console.log("Order Data:", orderData);
+    console.log("User Token:", userToken);
   
-    console.log("Sending order data:", orderData); // Add this line
+    try {
+      const response = await fetch(`${API_URL}/orders`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(userToken && { Authorization: `Bearer ${userToken}` }),
+        },
+        body: JSON.stringify(orderData),
+      });
   
-    const response = await fetch(`${API_URL}/orders`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        ...(userToken && { Authorization: `Bearer ${userToken}` }),
-      },
-      body: JSON.stringify(orderData),
-    });
+      console.log("Fetch Response:", response);
   
-    if (!response.ok) {
-      const errorMessage = await response.text();
-      console.error("Error submitting order:", errorMessage); // Add this line
-      setError(response.statusText);
-      return;
+      if (!response.ok) {
+        const errorMessage = await response.text();
+        console.error("Error submitting order:", errorMessage);
+        setError(response.statusText);
+        return;
+      }
+  
+      setSuccess("Your order has been successfully processed!");
+      setError("");
+    } catch (error) {
+      console.error("Fetch Error:", error);
+      setError("An error occurred while processing your order. Please try again.");
     }
-  
-    setSuccess("Your order has been successfully processed!");
-    setError("");
-    // Handle the successful order submission here
   }
-  
+
   return (
     <div className="paper">
       <h5>Your information:</h5>
