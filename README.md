@@ -26,8 +26,8 @@ To test and run the app on localhost, follow these steps:
 
 Running on Docker.
 
-1. Build image in the main root: 'docker-compose build'
-2. Launch the application: 'docker-compose up'
+1. Build image in the main root: `docker-compose build`.
+2. Launch the application: `docker-compose up`.
 
 ## Features
 The application includes the following features:
