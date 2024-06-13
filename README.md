@@ -24,6 +24,11 @@ To test and run the app on localhost, follow these steps:
 6. Run `npm run build`.
 7. Run `npm run develop`.
 
+Running on Docker.
+
+1. Build image in the main root: 'docker-compose build'
+2. Launch the application: 'docker-compose up'
+
 ## Features
 The application includes the following features:
 
