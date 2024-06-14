@@ -12,6 +12,8 @@ services:
       - /app/node_modules
     environment:
       - NODE_ENV=development
+      - HOST=0.0.0.0
+      - PORT=1337
 
   frontend:
     build:
@@ -23,3 +25,4 @@ services:
       - /app/node_modules
     environment:
       - NODE_ENV=development
+      - NEXT_PUBLIC_API_URL=http://jackie-chungfullstackrestaurantapp.duckdns.org:1337
