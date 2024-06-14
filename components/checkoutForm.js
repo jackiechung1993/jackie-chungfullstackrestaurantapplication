@@ -68,9 +68,14 @@ function CheckoutForm() {
       console.log("Fetch Response:", response);
   
       if (!response.ok) {
-        const errorMessage = await response.text();
-        console.error("Error submitting order:", errorMessage);
-        setError(response.statusText);
+        const errorData = await response.json();
+        console.error("Error submitting order:", errorData);
+
+        if (response.status === 401) {
+          setError("You need to register and sign in to access this resource.");
+        } else {
+          setError(errorData.message || response.statusText);
+        }
         return;
       }
   
@@ -125,6 +130,7 @@ function CheckoutForm() {
 }
 
 export default CheckoutForm;
+
 
 
 
