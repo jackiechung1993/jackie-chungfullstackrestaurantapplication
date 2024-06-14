@@ -13,6 +13,9 @@ import {
   Col
 } from "reactstrap";
 
+// Use the environment variable or fallback to localhost
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:1337";
+
 const GET_RESTAURANTS = gql`
   query($name: String!) {
     restaurants(where: { name_contains: $name }) {
@@ -52,8 +55,8 @@ function RestaurantList({ search }) {
         <CardImg
           top={true}
           style={{ height: 200 }}
-          src={res.image && res.image.url ? `http://localhost:1337${res.image.url}` : '/default-image.png'}
-          />
+          src={res.image && res.image.url ? `${API_URL}${res.image.url}` : '/default-image.png'}
+        />
         <CardBody>
           <CardText>{res.description}</CardText>
         </CardBody>
@@ -79,3 +82,4 @@ function RestaurantList({ search }) {
 }
 
 export default RestaurantList;
+
