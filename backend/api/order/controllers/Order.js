@@ -12,19 +12,29 @@ module.exports = {
       const stripeAmount = Math.round(amount * 100);
       console.log("Processed amount (cents) for Stripe:", stripeAmount);
 
+      // Check if user is authenticated
+      const user = ctx.state.user;
+      if (!user || !user.id) {
+        console.error("User not authenticated:", user);
+        ctx.throw(400, "User not authenticated");
+        return;
+      }
+
       const charge = await stripe.charges.create({
         amount: stripeAmount,
         currency: "usd",
-        description: `Order ${new Date()} by ${ctx.state.user.id}`,
+        description: `Order ${new Date()} by ${user.id}`,
         source: token,
       });
 
       console.log("Stripe charge details:", charge);
 
+      // Save the original amount in dollars
       const savedAmount = amount;
 
+      // Register the order
       const order = await strapi.services.order.create({
-        user: ctx.state.user.id,
+        user: user.id,
         charge_id: charge.id,
         amount: savedAmount,
         address,
