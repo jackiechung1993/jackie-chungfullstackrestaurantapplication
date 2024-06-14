@@ -1,51 +1,48 @@
-import { useEffect, useContext } from "react";
+import { useEffect } from "react";
 import Router from "next/router";
 import Cookie from "js-cookie";
 import axios from "axios";
-import AppContext from "./context/AppContext";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:1337";
 
-// Register a new user
-export const registerUser = async (username, email, password) => {
+//register a new user
+export const registerUser = (username, email, password) => {
   if (typeof window === "undefined") {
     return;
   }
-  try {
-    const response = await axios.post(`${API_URL}/auth/local/register`, {
-      username,
-      email,
-      password
-    });
-    Cookie.set("token", response.data.jwt);
-    Router.push("/");
-    return response.data;
-  } catch (error) {
-    console.error("An error occurred:", error);
-    throw error;
-  }
+  return new Promise((resolve, reject) => {
+    axios
+      .post(`${API_URL}/auth/local/register`, { username, email, password })
+      .then((res) => {
+        Cookie.set("token", res.data.jwt);
+        resolve(res);
+        Router.push("/");
+      })
+      .catch((error) => {
+        reject(error);
+      });
+  });
 };
 
-// Login
-export const login = async (identifier, password) => {
+export const login = (identifier, password) => {
   if (typeof window === "undefined") {
     return;
   }
-  try {
-    const response = await axios.post(`${API_URL}/auth/local/`, {
-      identifier,
-      password
-    });
-    Cookie.set("token", response.data.jwt);
-    Router.push("/");
-    return response.data;
-  } catch (error) {
-    console.error("An error occurred:", error);
-    throw error;
-  }
+
+  return new Promise((resolve, reject) => {
+    axios
+      .post(`${API_URL}/auth/local/`, { identifier, password })
+      .then((res) => {
+        Cookie.set("token", res.data.jwt);
+        resolve(res);
+        Router.push("/");
+      })
+      .catch((error) => {
+        reject(error);
+      });
+  });
 };
 
-// Logout
 export const logout = () => {
   Cookie.remove("token");
   delete window.__user;
@@ -53,11 +50,8 @@ export const logout = () => {
   Router.push("/");
 };
 
-// Higher-order component for authentication
 export const withAuthSync = (Component) => {
   const Wrapper = (props) => {
-    const { setUser, setIsAuthenticated } = useContext(AppContext);
-
     const syncLogout = (event) => {
       if (event.key === "logout") {
         Router.push("/login");
@@ -72,27 +66,6 @@ export const withAuthSync = (Component) => {
         window.localStorage.removeItem("logout");
       };
     }, []);
-
-    useEffect(() => {
-      const token = Cookie.get("token");
-      if (token) {
-        axios
-          .get(`${API_URL}/users/me`, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          })
-          .then((response) => {
-            setIsAuthenticated(true);
-            setUser(response.data);
-          })
-          .catch((error) => {
-            console.error("Error fetching user data", error);
-            setIsAuthenticated(false);
-            setUser(null);
-          });
-      }
-    }, [setIsAuthenticated, setUser]);
 
     return <Component {...props} />;
   };
