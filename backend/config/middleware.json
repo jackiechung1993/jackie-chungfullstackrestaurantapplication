@@ -9,11 +9,74 @@
       "gzip"
     ],
     "order": [
-      "Define the middlewares' load order by putting their name in this array is the right order"
+      "Define the middlewares' load order by putting their name in this array in the right order"
     ],
     "after": [
       "parser",
       "router"
     ]
+  },
+  "settings": {
+    "public": {
+      "enabled": true
+    },
+    "cors": {
+      "enabled": true,
+      "origin": ["*"]
+    },
+    "logger": {
+      "enabled": true,
+      "level": "info",
+      "exposeInContext": true,
+      "requests": true
+    },
+    "parser": {
+      "enabled": true,
+      "multipart": true,
+      "formidable": {
+        "maxFileSize": 2000000
+      }
+    },
+    "gzip": {
+      "enabled": true
+    },
+    "responseTime": {
+      "enabled": true
+    },
+    "router": {
+      "enabled": true,
+      "prefix": ""
+    },
+    "request": {
+      "enabled": false
+    },
+    "security": {
+      "enabled": true,
+      "csrf": {
+        "enabled": false
+      }
+    },
+    "xss": {
+      "enabled": true,
+      "mode": "block"
+    },
+    "session": {
+      "enabled": true,
+      "client": "cookie",
+      "key": "strapi.sid",
+      "prefix": "strapi:sess:",
+      "secretKeys": ["mySecretKey1", "mySecretKey2"],
+      "httpOnly": true,
+      "maxAge": 86400000,
+      "overwrite": true,
+      "signed": true
+    },
+    "admin": {
+      "enabled": true,
+      "auth": {
+        "secret": "yourAdminJWTSecret"
+      }
+    }
   }
 }
+
