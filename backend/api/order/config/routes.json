@@ -5,7 +5,7 @@
       "path": "/orders",
       "handler": "Order.find",
       "config": {
-        "policies": []
+        "policies": ["plugins::users-permissions.isAuthenticated"]
       }
     },
     {
@@ -13,7 +13,7 @@
       "path": "/orders/count",
       "handler": "Order.count",
       "config": {
-        "policies": []
+        "policies": ["plugins::users-permissions.isAuthenticated"]
       }
     },
     {
@@ -21,7 +21,7 @@
       "path": "/orders/:id",
       "handler": "Order.findOne",
       "config": {
-        "policies": []
+        "policies": ["plugins::users-permissions.isAuthenticated"]
       }
     },
     {
@@ -29,7 +29,7 @@
       "path": "/orders",
       "handler": "Order.create",
       "config": {
-        "policies": []
+        "policies": ["plugins::users-permissions.isAuthenticated"]
       }
     },
     {
@@ -37,7 +37,7 @@
       "path": "/orders/:id",
       "handler": "Order.update",
       "config": {
-        "policies": []
+        "policies": ["plugins::users-permissions.isAuthenticated"]
       }
     },
     {
@@ -45,8 +45,9 @@
       "path": "/orders/:id",
       "handler": "Order.delete",
       "config": {
-        "policies": []
+        "policies": ["plugins::users-permissions.isAuthenticated"]
       }
     }
   ]
 }
+
