@@ -70,4 +70,11 @@ function Dishes({ restId, search }) {
                 + Add To Cart
               </Button>
             </div>
-          </Ca
+          </Card>
+        </Col>
+      ))}
+    </Row>
+  );
+}
+
+export default Dishes;
