@@ -10,6 +10,18 @@ module.exports = {
 
       console.log("Received order data:", ctx.request.body);
 
+      // Check if user is authenticated
+      const user = ctx.state.user;
+      if (!user || !user.id) {
+        console.error("User not authenticated:", user);
+        ctx.status = 401;
+        ctx.body = {
+          error: "Unauthorized",
+          message: "You need to register and sign in to access this resource."
+        };
+        return;
+      }
+      
       const stripeAmount = Math.round(amount * 100);
       console.log("Processed amount (cents) for Stripe:", stripeAmount);
 
