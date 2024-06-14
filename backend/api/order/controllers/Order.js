@@ -2,24 +2,27 @@
 
 const stripe = require("stripe")('sk_test_51PIiPh2L5fvC02CfmmcPvypisMSU1sXLSTxsohfOf7y8Qb3y3eYqmJW15Am7wniPhYeIip58FQHLslYl3DqzqcwM007g9XFJ5g');
 
-
 module.exports = {
   create: async (ctx) => {
     try {
       const { address, amount, dishes, token, city, state } = ctx.request.body;
 
       console.log("Received order data:", ctx.request.body);
-      
-      const stripeAmount = Math.round(amount * 100);
-      console.log("Processed amount (cents) for Stripe:", stripeAmount);
 
       // Check if user is authenticated
       const user = ctx.state.user;
       if (!user || !user.id) {
         console.error("User not authenticated:", user);
-        ctx.throw(400, "User not authenticated");
+        ctx.status = 401;
+        ctx.body = {
+          error: "Unauthorized",
+          message: "You need to register and sign in to access this resource."
+        };
         return;
       }
+
+      const stripeAmount = Math.round(amount * 100);
+      console.log("Processed amount (cents) for Stripe:", stripeAmount);
 
       const charge = await stripe.charges.create({
         amount: stripeAmount,
@@ -46,10 +49,16 @@ module.exports = {
 
       console.log("Order saved in Strapi:", order);
 
-      return order;
+      ctx.status = 200;
+      ctx.body = order;
+
     } catch (error) {
       console.error("Error creating order:", error);
-      ctx.throw(500, "Internal Server Error");
+      ctx.status = 500;
+      ctx.body = {
+        error: "Internal Server Error",
+        message: "An error occurred while processing your order. Please try again later."
+      };
     }
   },
 };
