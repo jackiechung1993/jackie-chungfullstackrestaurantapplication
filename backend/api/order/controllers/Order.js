@@ -7,23 +7,24 @@ module.exports = {
     try {
       const { address, amount, dishes, token, city, state } = ctx.request.body;
 
+      if (!ctx.state.user) {
+        ctx.status = 401;
+        ctx.body = {
+          error: "Unauthorized",
+          message: "You need to register and sign in to access this resource."
+        };
+        return;
+      }
+
       console.log("Received order data:", ctx.request.body);
 
       const stripeAmount = Math.round(amount * 100);
       console.log("Processed amount (cents) for Stripe:", stripeAmount);
 
-      // Check if user is authenticated
-      const user = ctx.state.user;
-      if (!user || !user.id) {
-        console.error("User not authenticated:", user);
-        ctx.throw(400, "User not authenticated");
-        return;
-      }
-
       const charge = await stripe.charges.create({
         amount: stripeAmount,
         currency: "usd",
-        description: `Order ${new Date()} by ${user.id}`,
+        description: `Order ${new Date()} by ${ctx.state.user.id}`,
         source: token,
       });
 
@@ -34,7 +35,7 @@ module.exports = {
 
       // Register the order
       const order = await strapi.services.order.create({
-        user: user.id,
+        user: ctx.state.user.id,
         charge_id: charge.id,
         amount: savedAmount,
         address,
