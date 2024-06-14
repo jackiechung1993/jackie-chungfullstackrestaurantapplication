@@ -13,8 +13,8 @@ RUN npm install
 # Copy the rest of the application code
 COPY . .
 
-# Compile the application
-RUN npm run build
+# Compile the application if needed
+# RUN npm run build
 
 # Expose the port the app runs on
 EXPOSE 1337
