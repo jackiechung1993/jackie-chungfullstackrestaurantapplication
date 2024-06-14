@@ -13,6 +13,8 @@ import {
   Col
 } from "reactstrap";
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:1337";
+
 const GET_RESTAURANT_DISHES = gql`
   query($id: ID!, $name: String) {
     restaurant(id: $id) {
@@ -53,7 +55,7 @@ function Dishes({ restId, search }) {
             <CardImg
               top={true}
               style={{ height: 150, width: 150 }}
-              src={`http://localhost:1337${dish.image ? dish.image.url : ''}`}
+              src={dish.image ? `${API_URL}${dish.image.url}` : '/default-image.png'}
             />
             <CardBody>
               <CardTitle>{dish.name}</CardTitle>
@@ -68,11 +70,4 @@ function Dishes({ restId, search }) {
                 + Add To Cart
               </Button>
             </div>
-          </Card>
-        </Col>
-      ))}
-    </Row>
-  );
-}
-
-export default Dishes;
+          </Ca
