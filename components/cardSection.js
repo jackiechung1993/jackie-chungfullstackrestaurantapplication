@@ -22,9 +22,6 @@ function CardSection(props) {
               <div className="order-button-wrapper">
                 <button onClick={props.submitOrder}>Confirm order</button>
               </div>
-              {props.stripeError ? (
-                <div>{props.stripeError.toString()}</div>
-              ) : null}
               <div id="card-errors" role="alert" />
             </div>
           </fieldset>
