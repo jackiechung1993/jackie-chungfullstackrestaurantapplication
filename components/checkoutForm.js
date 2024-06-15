@@ -27,18 +27,20 @@ function CheckoutForm() {
   async function submitOrder() {
     const cardElement = elements.getElement(CardElement);
     const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:1337";
-  
+
     const tokenResponse = await stripe.createToken(cardElement);
     if (tokenResponse.error) {
       setError(tokenResponse.error.message);
+      setSuccess(""); // Clear success message if there's an error
       return;
     }
-  
+
     const token = tokenResponse.token;
     const userToken = Cookies.get("token");
-  
+
     if (appContext.cart.total <= 0 || appContext.cart.items.length === 0) {
       setError('Your cart is empty or has an invalid total.');
+      setSuccess(""); // Clear success message if there's an error
       return;
     }
 
@@ -50,11 +52,11 @@ function CheckoutForm() {
       state: data.state,
       token: token.id,
     };
-    
+
     console.log("API URL:", API_URL);
     console.log("Order Data:", orderData);
     console.log("User Token:", userToken);
-  
+
     try {
       const response = await fetch(`${API_URL}/orders`, {
         method: "POST",
@@ -64,9 +66,9 @@ function CheckoutForm() {
         },
         body: JSON.stringify(orderData),
       });
-  
+
       console.log("Fetch Response:", response);
-  
+
       if (!response.ok) {
         const errorData = await response.json();
         console.error("Error submitting order:", errorData);
@@ -76,14 +78,16 @@ function CheckoutForm() {
         } else {
           setError(errorData.message || response.statusText);
         }
+        setSuccess(""); // Clear success message if there's an error
         return;
       }
-  
+
       setSuccess("Your order has been successfully processed!");
-      setError("");
+      setError(""); // Clear error message if there's success
     } catch (error) {
       console.error("Fetch Error:", error);
       setError("An error occurred while processing your order. Please try again.");
+      setSuccess(""); // Clear success message if there's an error
     }
   }
 
